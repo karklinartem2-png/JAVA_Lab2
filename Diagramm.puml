@@ -1,0 +1,88 @@
+@startuml
+
+class Main {
+  +_main(): void
+}
+
+interface NotificationService {
+    sendNotification(String message, String recipient): void
+}
+
+class SmsNotification{
+    +sendNotification(String message, String recipient): void
+}
+
+class EmailNotification{
+    +sendNotification(String message, String recipient): void
+}
+class CorporateOrder{
+    -_amountOfVans: int
+
+    +CorporateOrder(String clientName, double basePrice, String vanType, int amountOfVans)
+
+    +calculateOrderPrice(): double
+    +getAmountOfVans(): int
+}
+
+class Loader{
+    -_loadersName: String
+    -rentalHours: double
+    -pricePerHour: double
+
+    +Loader(String loadersName, double rentalHours, double pricePerHour)
+
+    +getLoadersName(): String
+    +getRentalHours(): double
+    +getPricePerHour(): double
+    +setRentalHours(double rentalHours): void
+    +setPricePerHour(double pricePerHour): void
+}
+
+class PersonalOrder{
+    +PersonalOrder(String clientName, double basePrice)
+    +PersonalOrder(String clientName, double basePrice, String vanType)
+
+    +calculateOrderPrice(): double
+}
+
+abstract class VanService{
+    -_clientName: String
+    -_basePrice: double
+    -_vanType: String
+    -hiredLoader: Loader
+
+    +VanService(String clientName, double basePrice, String vanType)
+
+    +calculateOrderPrice(): double {abstract}
+
+    +getClientName(): String
+    +getVanType(): String
+    +getBasePrice(): double
+}
+
+class VanLogistics{
+    -_totalOrders: int
+    -_totalRevenue: double
+    -_notificationService: NotificationService
+
+    +VanLogistics(NotificationService notificationService)
+
+    +processOrder(VanService serv, String contact): void
+    +_printGlobalStats(): void
+}
+
+EmailNotification ..|> NotificationService
+SmsNotification ..|> NotificationService
+VanService --> Loader
+CorporateOrder --|> VanService
+PersonalOrder --|> VanService
+VanLogistics --> VanService
+VanLogistics --> NotificationService
+Main --> SmsNotification
+Main --> EmailNotification
+Main --> VanLogistics
+Main --> PersonalOrder
+Main --> CorporateOrder
+
+
+@enduml
